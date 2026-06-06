@@ -1,10 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /admin
-Disallow: /api/
-
-# Block sensitive paths
 Disallow: /admin/
 Disallow: /api/
 
-Sitemap: https://didee.com/sitemap.xml
+Sitemap: https://dideenepal.vercel.app/sitemap.xml
