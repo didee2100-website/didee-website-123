@@ -1,13 +1,13 @@
 {
   "version": 2,
   "installCommand": "pnpm install",
-  "buildCommand": "pnpm --filter @workspace/didee build",
+  "buildCommand": "pnpm --filter @workspace/api-server build && pnpm --filter @workspace/didee build",
   "outputDirectory": "artifacts/didee/dist/public",
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/index" }
   ],
   "functions": {
-    "api/index.ts": {
+    "api/index.mjs": {
       "memory": 1024,
       "maxDuration": 30
     }
