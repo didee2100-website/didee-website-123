@@ -1,6 +1,7 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import session from "express-session";
+import connectPg from "connect-pg-simple";
 import pinoHttp from "pino-http";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -35,22 +36,32 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const PgStore = connectPg(session);
+
+const sessionStore = process.env.DATABASE_URL
+  ? new PgStore({
+      conString: process.env.DATABASE_URL,
+      createTableIfMissing: true,
+      tableName: "session",
+    })
+  : undefined;
+
 app.use(
   session({
+    store: sessionStore,
     secret: process.env["SESSION_SECRET"] ?? "didee-secret-fallback",
     name: "didee.admin.sid",
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: "lax",
     },
   }),
 );
 
-// Serve uploaded images — two levels up from dist/ to reach artifacts/uploads/
 app.use("/api/uploads", express.static(path.join(__dirname, "..", "..", "uploads")));
 
 app.use("/api", router);

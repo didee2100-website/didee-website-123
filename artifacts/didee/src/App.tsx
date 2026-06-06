@@ -84,7 +84,16 @@ import AdminThemes from "@/pages/admin/themes";
 import AdminSettings from "@/pages/admin/settings";
 import AdminContent from "@/pages/admin/content";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 0,
+      refetchOnWindowFocus: true,
+      refetchOnMount: "always",
+      retry: 1,
+    },
+  },
+});
 
 function Router() {
   return (
