@@ -96,15 +96,23 @@ export default function AdminProducts() {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
+    setError("");
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      if (!res.ok) throw new Error("Upload failed");
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: fd,
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+        throw new Error(errData.error ?? `HTTP ${res.status}`);
+      }
       const data = await res.json();
       setForm((f) => ({ ...f, images: [...f.images, data.url] }));
     } catch (err: any) {
-      setError("Image upload failed: " + err.message);
+      setError("Image upload failed: " + (err.message ?? "Unknown error"));
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";

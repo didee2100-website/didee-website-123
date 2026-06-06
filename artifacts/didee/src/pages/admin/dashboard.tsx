@@ -254,21 +254,38 @@ export default function AdminDashboard() {
         </div>
 
         {/* Products Inventory */}
-        {topProducts.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.5 }}
-            className="rounded-xl overflow-hidden"
-            style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.06)" }}
-          >
-            <div className="flex justify-between items-center px-6 py-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-              <div className="flex items-center gap-2">
-                <Star className="w-4 h-4 text-[#C9A86A]" />
-                <h3 className="font-black text-sm tracking-wide text-white">Products Inventory</h3>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.5 }}
+          className="rounded-xl overflow-hidden"
+          style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.06)" }}
+        >
+          <div className="flex justify-between items-center px-6 py-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+            <div className="flex items-center gap-2">
+              <Star className="w-4 h-4 text-[#C9A86A]" />
+              <h3 className="font-black text-sm tracking-wide text-white">Products Inventory</h3>
+            </div>
+            <Link href="/admin/products" className="text-[10px] font-black tracking-widest uppercase text-white/25 hover:text-[#C9A86A] transition-colors flex items-center gap-1">
+              Manage All <ChevronRight className="w-3 h-3" />
+            </Link>
+          </div>
+          {topProducts.length === 0 ? (
+            <div className="p-10 flex flex-col items-center justify-center gap-4 text-center">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: "rgba(167,139,250,0.12)", border: "1px solid rgba(167,139,250,0.2)" }}>
+                <Package className="w-6 h-6" style={{ color: "#A78BFA" }} />
               </div>
-              <Link href="/admin/products" className="text-[10px] font-black tracking-widest uppercase text-white/25 hover:text-[#C9A86A] transition-colors flex items-center gap-1">
-                Manage All <ChevronRight className="w-3 h-3" />
+              <div>
+                <p className="text-white/60 text-sm font-bold mb-1">No products yet</p>
+                <p className="text-white/25 text-xs">Add your first product to start selling</p>
+              </div>
+              <Link
+                href="/admin/products"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-black tracking-widest uppercase transition-colors"
+                style={{ background: "rgba(201,168,106,0.12)", color: "#C9A86A", border: "1px solid rgba(201,168,106,0.2)" }}
+              >
+                <Package className="w-3.5 h-3.5" /> Add First Product
               </Link>
             </div>
+          ) : (
             <div className="divide-y" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
               {topProducts.map((p: any) => {
                 const stock = p.stock ?? 0;
@@ -312,6 +329,65 @@ export default function AdminDashboard() {
                   </div>
                 );
               })}
+            </div>
+          )}
+        </motion.div>
+
+        {/* Getting Started — shown only when store is empty */}
+        {summary.totalProducts === 0 && summary.totalOrders === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.5 }}
+            className="rounded-xl p-6"
+            style={{ background: "linear-gradient(135deg, #1a1200 0%, #141414 100%)", border: "1px solid rgba(201,168,106,0.15)" }}
+          >
+            <div className="flex items-center gap-2 mb-6">
+              <Zap className="w-4 h-4 text-[#C9A86A]" />
+              <h3 className="font-black text-sm tracking-wide text-white">Getting Started</h3>
+              <span className="ml-2 text-[10px] font-black tracking-widest uppercase px-2 py-0.5 rounded-full" style={{ background: "rgba(201,168,106,0.15)", color: "#C9A86A" }}>Setup Guide</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                {
+                  step: "01",
+                  title: "Add Collections",
+                  desc: "Create collections like Streetwear, Casual, Dresses to organise your products.",
+                  href: "/admin/collections",
+                  color: "#34D399",
+                  icon: FolderTree,
+                },
+                {
+                  step: "02",
+                  title: "Add Products",
+                  desc: "Upload your first products with images, prices, and descriptions.",
+                  href: "/admin/products",
+                  color: "#A78BFA",
+                  icon: Package,
+                },
+                {
+                  step: "03",
+                  title: "Customise Content",
+                  desc: "Update homepage banners, lookbook, and journal to match your brand.",
+                  href: "/admin/content",
+                  color: "#C9A86A",
+                  icon: Box,
+                },
+              ].map(({ step, title, desc, href, color, icon: Icon }) => (
+                <Link key={href} href={href} className="group block p-5 rounded-xl transition-colors hover:bg-white/[0.03]" style={{ background: "#0d0d0d", border: "1px solid rgba(255,255,255,0.05)" }}>
+                  <div className="flex items-start gap-4">
+                    <div className="w-9 h-9 rounded-lg shrink-0 flex items-center justify-center" style={{ background: `${color}18`, border: `1px solid ${color}25` }}>
+                      <Icon className="w-4 h-4" style={{ color }} />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[10px] font-black tracking-[0.2em] uppercase mb-1" style={{ color }}>{step}</p>
+                      <p className="text-sm font-bold text-white mb-1 group-hover:text-white transition-colors">{title}</p>
+                      <p className="text-[11px] text-white/30 leading-relaxed">{desc}</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex items-center gap-1 text-[10px] font-black tracking-widest uppercase transition-colors" style={{ color }}>
+                    Get Started <ArrowRight className="w-3 h-3" />
+                  </div>
+                </Link>
+              ))}
             </div>
           </motion.div>
         )}
