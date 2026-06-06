@@ -1,7 +1,6 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import session from "express-session";
-import connectPg from "connect-pg-simple";
 import pinoHttp from "pino-http";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -36,19 +35,8 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const PgStore = connectPg(session);
-
-const sessionStore = process.env.DATABASE_URL
-  ? new PgStore({
-      conString: process.env.DATABASE_URL,
-      createTableIfMissing: true,
-      tableName: "session",
-    })
-  : undefined;
-
 app.use(
   session({
-    store: sessionStore,
     secret: process.env["SESSION_SECRET"] ?? "didee-secret-fallback",
     name: "didee.admin.sid",
     resave: false,
